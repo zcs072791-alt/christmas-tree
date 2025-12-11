@@ -13,13 +13,34 @@ export const BackgroundMusic: React.FC = () => {
           await audioRef.current.play();
           setIsPlaying(true);
         } catch (error) {
-          console.log('自动播放被浏览器阻止，请点击播放按钮');
+          console.log('自动播放被浏览器阻止，等待用户交互');
           setIsPlaying(false);
+          // 添加一个一次性的用户交互监听器
+          const handleInteraction = async () => {
+            if (audioRef.current) {
+              try {
+                await audioRef.current.play();
+                setIsPlaying(true);
+                // 移除监听器
+                document.removeEventListener('click', handleInteraction);
+                document.removeEventListener('touchstart', handleInteraction);
+              } catch (err) {
+                console.error('播放失败:', err);
+              }
+            }
+          };
+          document.addEventListener('click', handleInteraction, { once: true });
+          document.addEventListener('touchstart', handleInteraction, { once: true });
         }
       }
     };
 
-    playAudio();
+    // 延迟一点播放，确保组件完全加载
+    const timer = setTimeout(() => {
+      playAudio();
+    }, 500);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const togglePlay = () => {
@@ -43,7 +64,7 @@ export const BackgroundMusic: React.FC = () => {
 
   return (
     <>
-      <audio ref={audioRef} loop>
+      <audio ref={audioRef} loop autoPlay>
         <source src="/music/christmas.mp3" type="audio/mpeg" />
       </audio>
       
