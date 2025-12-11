@@ -1,10 +1,10 @@
-
 import React, { useState, Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Loader } from '@react-three/drei';
 import { Experience } from './components/Experience';
 import { UIOverlay } from './components/UIOverlay';
 import { GestureController } from './components/GestureController';
+import { BackgroundMusic } from './components/BackgroundMusic';
 import { TreeMode } from './types';
 
 // Simple Error Boundary to catch 3D resource loading errors (like textures)
@@ -85,6 +85,9 @@ export default function App() {
       />
       
       <UIOverlay mode={mode} onToggle={toggleMode} onPhotosUpload={handlePhotosUpload} hasPhotos={uploadedPhotos.length > 0} />
+      
+      {/* Background Music */}
+      <BackgroundMusic />
       
       {/* Gesture Control Module */}
       <GestureController currentMode={mode} onModeChange={setMode} onHandPosition={handleHandPosition} />
